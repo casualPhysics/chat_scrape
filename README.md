@@ -32,6 +32,13 @@ https://beta.openai.com/docs/guides/fine-tuning
 
 ### Running 
 
+Git clone this repo 
+
+```
+git clone https://github.com/afiqhatta/chat_scrape.git
+```
+
+
 Set up a virtual environment, and then run the python script with 
 the following command line arguments. 
 ```
@@ -56,5 +63,3 @@ To parse this, use
 ```
 python wa_parser.py chat.txt 'Alice Smith' 'Bob Jones'
 ```
-
-
