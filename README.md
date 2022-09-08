@@ -30,6 +30,8 @@ something like openai's data preparation api.
 
 https://beta.openai.com/docs/guides/fine-tuning
 
+---
+
 ### Running 
 
 Git clone this repo 
@@ -47,6 +49,8 @@ pip install -r requirements.txt
 source env/bin/activate 
 python wa_parser.py <EXPORTED_TEXT> <PROMPTER> <RESPONDER>
 ```
+
+---
 
 ### Examples 
 Export and download the WhatsApp chat of your choice 
