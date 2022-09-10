@@ -48,6 +48,13 @@ def converter(
     df = pd.DataFrame.from_dict(result_dict).T[['prompt', 'completion']]
     return df
 
+def get_delimiters():
+    """
+    This function should scan the dataframe 
+    for unused delimiters in the 
+    dataframe
+    """
+    return 0
 
 if __name__ == "__main__":
 
