@@ -67,3 +67,10 @@ To parse this, use
 ```
 python wa_parser.py chat.txt 'Alice Smith' 'Bob Jones'
 ```
+
+--- 
+### To do 
+- Custom delimiting. 
+- Concatenation of multiple files, and text. 
+- Multiple layered prompts.
+- We should slice and dice prompts in multiple ways.  
