@@ -2,14 +2,18 @@ from typing import Union
 
 from fastapi import FastAPI
 from pydantic import BaseModel
-from whatsapp_parser import text_to_dictionary
+from parsing.whatsapp import text_to_dictionary
 
 
 app = FastAPI()
 
 
+@app.get("/")
+def read_root():
+    return {"Welcome to": "WhatsApp Parser"}
+
+
 class ChatParser(BaseModel):
-    filename: str
     prompter: str
     responder: str
     text: Union[str, None]
@@ -17,4 +21,4 @@ class ChatParser(BaseModel):
 
 @app.put("/parser")
 async def parse_data(text_data: ChatParser):
-    return text_to_dictionary(prompter=text_data.prompter, responder=text_data.responder, text=text_data.text)
+    return text_to_dictionary(prompt=text_data.prompter, response=text_data.responder, text=text_data.text)
