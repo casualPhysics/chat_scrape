@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import argparse
 import os.path
+import json
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -9,13 +10,10 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-from attachments import get_attachments
-from utils import write_bytes_file
-from config import WHATSAPP_DATA_FILTER, MY_USER_ID, TRAINING_DIRECTORY
-from utils import unzip_files_in_dir_to_dir
+from gmail_api.attachments import get_attachments
+from gmail_api.utils import write_bytes_file, unzip_files_in_dir_to_dir
+from gmail_api.config import WHATSAPP_DATA_FILTER, MY_USER_ID, TRAINING_DIRECTORY, GMAIL_API_TOKEN_DIRECTORY
 
-# If modifying these scopes, delete the file token.json.
-SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 
 def main(filter_string, user_id, destination_path):
@@ -48,10 +46,55 @@ def main(filter_string, user_id, destination_path):
         print(f'An error occurred: {error}')
 
 
-def download_email_attachments(creds, filter_string, user_id, destination_path):
-    # Call the Gmail API
-    service = build('gmail', 'v1', credentials=creds)
+def get_email_message_objects(gmail_cred_token_json, user_id: str, filter_string: str):
+    """
+    :param gmail_cred_token_json: The token json that can be loaded in session.
+    :param user_id: 'me' for default works.
+    :param filter_string: Filtering criteria for the
+    :return: service, messages
+    """
+    service = build('gmail', 'v1', credentials=gmail_cred_token_json)
     messages = service.users().messages().list(userId=user_id, q=filter_string).execute()
+    return service, messages
+
+
+def iterate_through_message_objects(gmail_cred_token, user_id, filter_string, func):
+    service, messages = get_email_message_objects(gmail_cred_token, filter_string, user_id)
+    if len(messages) == 0: raise Exception('No messages to iterate through with current filters.')
+    item_store =
+    for message in messages:
+        func(service, message)
+
+
+def get
+def get_attachment_name_from_message(message, service):
+    pass
+
+
+def
+def get_message_details(message):
+    pass
+
+
+
+# def download_email_attachments(creds, filter_string, user_id, destination_path):
+#     for message in messages["messages"]:
+#         message_id = message["id"]
+#         attachment, name = get_attachments(service, user_id, message_id)
+#         target = destination_path + name
+#         write_bytes_file(target, attachment)
+
+
+def upload_email_attachments():
+    pass
+
+
+def summarise_email_attachments():
+    pass
+
+
+def list_emails_from_filter(creds, filter_string, user_id):
+    messages = get_email_message_objects(creds, filter_string, user_id)
 
     for message in messages["messages"]:
         message_id = message["id"]
@@ -65,7 +108,6 @@ def gcloud_store_email_attachments():
 
 
 if __name__ == '__main__':
-
     # parser = argparse.ArgumentParser(description='Desktop download email attachments')
     # parser.add_argument('-id')
     # parser.add_argument('-destination_path', type=str, help='Path to file')
@@ -76,6 +118,9 @@ if __name__ == '__main__':
     # prompter = args.prompter
     # responder = args.responder
     # filename = args.filename
+    creds = read_token_from_path(GMAIL_API_TOKEN_DIRECTORY)
+    print(get_email_message_objects(creds, MY_USER_ID, WHATSAPP_DATA_FILTER))
 
-    main(WHATSAPP_DATA_FILTER, MY_USER_ID, TRAINING_DIRECTORY)
+    # main(WHATSAPP_DATA_FILTER, MY_USER_ID, TRAINING_DIRECTORY)
+
     # unzip_files_in_dir_to_dir('../family_chats/zips', '../family_chats/text')

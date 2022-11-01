@@ -67,3 +67,13 @@ To parse this, use
 ```
 python wa_parser.py chat.txt 'Alice Smith' 'Bob Jones'
 ```
+
+--- 
+### Deploying this to Google App Run 
+The original intention of creating this module was to create a service where people can parse 
+chats through an api. Currently, this is run in production on a Google compute engine 
+instance. 
+To deploy this to google cloud, after creating the project, you can run 
+```
+gcloud app deploy 
+```

@@ -29,3 +29,18 @@ def get_attachments(service, user_id, msg_id):
 
     except errors.HttpError as error:
         print(f'An error occurred: {error}')
+
+
+class AttachmentHandler(object):
+
+    def __init__(self):
+        self.service = 0
+        self.user_id = 0
+        self.message_id = 0
+
+    def get_name(self):
+        pass
+
+    def get_file_data(self):
+        pass
+
