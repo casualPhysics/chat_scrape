@@ -7,13 +7,12 @@ import json
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 from gmail_api.attachments import get_attachments
 from gmail_api.utils import write_bytes_file, unzip_files_in_dir_to_dir
 from gmail_api.config import WHATSAPP_DATA_FILTER, MY_USER_ID, TRAINING_DIRECTORY, GMAIL_API_TOKEN_DIRECTORY
-
+from gmail_api.authentication.tokens import get_user_token, read_token_from_path
 
 
 def main(filter_string, user_id, destination_path):
@@ -46,43 +45,49 @@ def main(filter_string, user_id, destination_path):
         print(f'An error occurred: {error}')
 
 
-def get_email_message_objects(gmail_cred_token_json, user_id: str, filter_string: str):
-    """
-    :param gmail_cred_token_json: The token json that can be loaded in session.
-    :param user_id: 'me' for default works.
-    :param filter_string: Filtering criteria for the
-    :return: service, messages
-    """
-    service = build('gmail', 'v1', credentials=gmail_cred_token_json)
-    messages = service.users().messages().list(userId=user_id, q=filter_string).execute()
-    return service, messages
+class MessageCollection(object):
+    def __init__(self, service, messages, user_id):
+        self.service = service
+        self.messages = messages
+        self.user_id = user_id
+
+    def iterate_through_message_objects(self, func):
+        item_store = []
+        for message in self.messages:
+            message_id = message['id']
+            item_store.append(func(message_id, self.service, self.user_id))
+        return item_store
+
+    def get_message_ids(self):
+        return 0
 
 
+# this class should be an email collection object
 def iterate_through_message_objects(gmail_cred_token, user_id, filter_string, func):
     service, messages = get_email_message_objects(gmail_cred_token, filter_string, user_id)
     if len(messages) == 0: raise Exception('No messages to iterate through with current filters.')
-    item_store =
-    for message in messages:
-        func(service, message)
 
 
-def get
-def get_attachment_name_from_message(message, service):
+def _get_attachment_name_from_message(message_id, service, user_id):
+    attachment, name = get_attachments(service, user_id, message_id)
+    return name
+
+
+def _get_attachment_file_from_message(message_id, service, user_id):
+    attachment, name = get_attachments(service, user_id, message_id)
+    return attachment
+
+
+def get_attachment_names_from_messages(message_id, service, user_id):
     pass
 
 
-def
+def get_attachment_file_from_message(message, service, user_id):
+    pass
+
+
 def get_message_details(message):
     pass
-
-
-
-# def download_email_attachments(creds, filter_string, user_id, destination_path):
-#     for message in messages["messages"]:
-#         message_id = message["id"]
-#         attachment, name = get_attachments(service, user_id, message_id)
-#         target = destination_path + name
-#         write_bytes_file(target, attachment)
 
 
 def upload_email_attachments():
@@ -119,7 +124,8 @@ if __name__ == '__main__':
     # responder = args.responder
     # filename = args.filename
     creds = read_token_from_path(GMAIL_API_TOKEN_DIRECTORY)
-    print(get_email_message_objects(creds, MY_USER_ID, WHATSAPP_DATA_FILTER))
+    messages, service = get_email_message_objects(creds, MY_USER_ID, WHATSAPP_DATA_FILTER)
+    iterate_through_message_objects
 
     # main(WHATSAPP_DATA_FILTER, MY_USER_ID, TRAINING_DIRECTORY)
 

@@ -6,6 +6,7 @@ from flask import redirect, url_for, render_template
 import sys
 from gmail_api.handler import get_user_token
 from gmail_api.config import GMAIL_API_CREDENTIALS
+from gmail_api.MessageHandlers import WhatsAppDataGmailMessageHandler
 
 
 app = Flask(__name__)
@@ -34,6 +35,13 @@ def email_registry():
         token = get_user_token(creds, GMAIL_API_CREDENTIALS)
         session['email_token'] = token
     redirect(url_for('index'))
+
+
+@app.route('/attachments')
+def attachments():
+    token = session['email_token']
+    whatsapp_data_messages = WhatsAppDataGmailMessageHandler(token).get_message_ids()
+    return render_template('home/attachments.html', attachments=whatsapp_data_messages)
 
 
 @app.route('/email', methods=['GET', 'POST'])

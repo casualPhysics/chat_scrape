@@ -1,0 +1,9 @@
+{% extends 'home/index.html' %}
+
+{% block attachments }
+
+{% for page in pages %}
+<p>{{ page }}</p>
+{% endfor %}
+
+{% endblock attachments }
