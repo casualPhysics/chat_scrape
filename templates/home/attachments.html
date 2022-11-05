@@ -1,9 +1,24 @@
 {% extends 'home/index.html' %}
 
-{% block attachments }
+{% block page_description %}
+This is a page that lists your available chats that can be
+used for pretraining.
+{% endblock page_description %}
 
-{% for page in pages %}
-<p>{{ page }}</p>
-{% endfor %}
+{% block attachments %}
 
-{% endblock attachments }
+<div class="row">
+  <div class="column">
+      {% for page in pages %}
+        <p><b>{{ page.name }}</b></p>
+        <p>{{ page.text }}</p>
+      {% endfor %}
+  </div>
+  <div class="column">
+      {% for parse_state in parse_list %}
+        <p>{{ parse_state }}</p>
+      {% endfor %}
+  </div>
+</div>
+
+{% endblock attachments %}

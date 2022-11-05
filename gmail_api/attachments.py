@@ -1,6 +1,13 @@
 import base64
 from apiclient import errors
+from gmail_api.ServiceHandler import GmailSessionServiceHandler
 import zipfile
+
+
+class MyAttachmentNameRetriever(GmailSessionServiceHandler):
+    
+    def __init__(self, gmail_cred_token_json):
+        super(MyAttachmentNameRetriever, self).__init__(gmail_cred_token_json)
 
 
 def get_attachments(service, user_id, msg_id):
@@ -29,18 +36,3 @@ def get_attachments(service, user_id, msg_id):
 
     except errors.HttpError as error:
         print(f'An error occurred: {error}')
-
-
-class AttachmentHandler(object):
-
-    def __init__(self):
-        self.service = 0
-        self.user_id = 0
-        self.message_id = 0
-
-    def get_name(self):
-        pass
-
-    def get_file_data(self):
-        pass
-

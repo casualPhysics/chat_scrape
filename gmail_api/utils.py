@@ -1,7 +1,7 @@
-import zipfile
-import os
 from pathlib import Path
 import os
+import zipfile
+import io
 
 
 def write_bytes_file(path, file_data_tmp):
@@ -69,4 +69,9 @@ def get_file_name(directory_string):
     scan_files_directory(directory_string, print)
 
 
-
+def read_txt_file_from_zip_buffer(file_buffer):
+    z = zipfile.ZipFile(io.BytesIO(file_buffer))
+    text_string = z.read(z.infolist()[0])
+    z.extractall()
+    z.close()
+    return text_string

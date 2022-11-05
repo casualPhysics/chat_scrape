@@ -7,5 +7,8 @@ ZIP_DIRECTORY = f'{TRAINING_DIRECTORY}/zips'
 TEXT_DIRECTORY = f'{TRAINING_DIRECTORY}/text'
 
 # Private key gmail credentials here
-GMAIL_API_CREDENTIALS = f'credentials/credentials.json'
+GMAIL_API_CREDENTIALS = f'gmail_api/credentials/credentials.json'
 GMAIL_API_TOKEN_DIRECTORY = f'credentials/token.json'
+
+# gmail scopes
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']

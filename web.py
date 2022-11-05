@@ -1,5 +1,6 @@
 import configs
 
+
 def get_email_login_state(session):
     return
 

@@ -1,0 +1,1 @@
+EMAIL_TOKEN_KEY = 'email_token'
