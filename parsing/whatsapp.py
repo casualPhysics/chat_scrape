@@ -5,6 +5,12 @@ import datetime
 from pathlib import Path
 
 
+def parse_whatsapp_text_into_dataframe(raw_text, prompter, responder):
+    result_dict = text_to_dictionary(raw_text, prompter, responder)
+    df = pd.DataFrame.from_dict(result_dict).T[['prompt', 'completion']]
+    return df
+
+
 def converter(
         filepath: str,
         prompter: str,
@@ -21,8 +27,8 @@ def converter(
 
     with open(filepath, 'r') as fp:
         text = fp.read()
-    result_dict = text_to_dictionary(text, prompter, responder)
-    df = pd.DataFrame.from_dict(result_dict).T[['prompt', 'completion']]
+
+    df = parse_whatsapp_text_into_dataframe(text, prompter, responder)
     return df
 
 

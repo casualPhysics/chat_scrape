@@ -1,23 +1,32 @@
 {% extends 'home/index.html' %}
 
-{% block page_description %}
-This is a page that lists your available chats that can be
-used for pretraining.
-{% endblock page_description %}
+{% block message_packet_description %}
+
+This is a message_packet that lists your available chats that can be
+used for pretraining. To register chats, go to WhatsApp, export
+your chat data, and then send it to your email folder.
+
+{% endblock message_packet_description %}
 
 {% block attachments %}
 
 <div class="row">
   <div class="column">
-      {% for page in pages %}
-        <p><b>{{ page.name }}</b></p>
-        <p>{{ page.text }}</p>
+      {% for message_id, message_display_data in message_packets.items() %}
+        <p><b>{{ message_id }}</b></p>
+        <p>{{ message_display_data.text }}</p>
+            <!-- These buttons will allow us to download, pretrain and upload to google cloud-->
+        <form method="post">
+        <input type="submit" name="{{ message_display_data.button_name }}" value="{{ message_display_data.button_value }}">
+        </form>
       {% endfor %}
   </div>
   <div class="column">
+      <p> This is a text preview </p>.
       {% for parse_state in parse_list %}
         <p>{{ parse_state }}</p>
       {% endfor %}
+
   </div>
 </div>
 
