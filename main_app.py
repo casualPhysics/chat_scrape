@@ -13,7 +13,9 @@ from gmail_api.config import GMAIL_API_CREDENTIALS
 from gmail_api.handler import get_user_token
 
 from parsing.whatsapp import parse_whatsapp_text_into_dataframe
-from processing.WhatsappChatDisplayHandler import WhatsAppChatDisplayHandler
+from parsing.whatsapp import WhatsAppAgentDetector
+from parsing.whatsapp_text_search_patterns import ANDROID_WA_SEARCH_PATTERN
+from processing.WhatsappChatDisplayHandler import WhatsAppChatDisplayHandler, get_string_of_suggested_participants
 from processing.WhatsappChatFileDataConverter import WhatsAppChatFileDataConverter
 
 app = Flask(__name__)
@@ -62,10 +64,11 @@ def attachments():
     message_packet_data_by_ids = {}
     full_whatsapp_texts_by_ids = {}
     whatsapp_data_message_ids = whatsapp_message_handler.get_list_of_message_ids()
+    preview_table = ""
+    suggested_participants = ""
 
     # we assign the raw text to html
     for message_id_string in whatsapp_data_message_ids:
-
         # get the raw file data from attachments, by ids
         file_data, name = get_attachments(
             whatsapp_message_handler.get_service(),
@@ -78,27 +81,37 @@ def attachments():
             WhatsAppChatFileDataConverter(file_data, name)
             .get_chat_string_from_file()
         )
-
-        whatsapp_display_text_dictionary = {
-            'name': name,
-            'display_text': WhatsAppChatDisplayHandler()
-        }
-
         # index and store the full texts by message id
         full_whatsapp_texts_by_ids[message_id_string] = whatsapp_text_string
-        message_packet_data_by_ids[message_id_string] = whatsapp_display_text_dictionary
 
+        # store display texts by id
+        whatsapp_display_text_dictionary = {
+            'name': name,
+            'display_text': WhatsAppChatDisplayHandler(whatsapp_text_string).get_short_version(50)
+        }
         # create dictionaries that store button data
         parsing_button_dictionary = {'button_name': f'button that parses chat data',
-                                     'button_value': f'parsing button id: {message_id_string}'}
+                                     'button_value': message_id_string}
 
+        # create dictionaries that store the type of chat
+        # get the list of suggested authors
+
+        message_packet_data_by_ids[message_id_string] = whatsapp_display_text_dictionary
         message_packet_data_by_ids[message_id_string].update(parsing_button_dictionary)
 
     if request.method == 'POST':
+        selected_message_id_for_parsing = request.form['button that parses chat data']
+        text = full_whatsapp_texts_by_ids[selected_message_id_for_parsing]
 
+        whatsapp_parse_dataframe = parse_whatsapp_text_into_dataframe(text, 'Afiq Hatta', 'Ami')
+        preview_table = whatsapp_parse_dataframe.head().to_html()
 
-        parse_whatsapp_text_into_dataframe()
-    return render_template('home/attachments.html', message_packets=message_packet_data_by_ids)
+        # get suggested participants in the chat
+        suggested_participants = WhatsAppAgentDetector(text).get_participants_in_chat(ANDROID_WA_NEWLINE_DELIMITER,
+                                                                                      ANDROID_WA_SEARCH_PATTERN)
+
+    return render_template('home/attachments.html', message_packets=message_packet_data_by_ids,
+                           preview_table=preview_table, suggested_participants=suggested_participants)
 
 
 @app.route('/email', methods=['GET', 'POST'])

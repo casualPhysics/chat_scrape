@@ -1,11 +1,11 @@
 {% extends 'home/index.html' %}
 
 {% block message_packet_description %}
-
-This is a message_packet that lists your available chats that can be
-used for pretraining. To register chats, go to WhatsApp, export
-your chat data, and then send it to your email folder.
-
+    <p>
+        This is a message_packet that lists your available chats that can be
+        used for pretraining. To register chats, go to WhatsApp, export
+        your chat data, and then send it to your email folder.
+    </p>
 {% endblock message_packet_description %}
 
 {% block attachments %}
@@ -14,7 +14,7 @@ your chat data, and then send it to your email folder.
   <div class="column">
       {% for message_id, message_display_data in message_packets.items() %}
         <p><b>{{ message_id }}</b></p>
-        <p>{{ message_display_data.text }}</p>
+        <p>{{ message_display_data.display_text }}</p>
             <!-- These buttons will allow us to download, pretrain and upload to google cloud-->
         <form method="post">
         <input type="submit" name="{{ message_display_data.button_name }}" value="{{ message_display_data.button_value }}">
@@ -23,10 +23,7 @@ your chat data, and then send it to your email folder.
   </div>
   <div class="column">
       <p> This is a text preview </p>.
-      {% for parse_state in parse_list %}
-        <p>{{ parse_state }}</p>
-      {% endfor %}
-
+      {{ preview_table|safe }}
   </div>
 </div>
 
