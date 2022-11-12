@@ -3,6 +3,7 @@ from collections import defaultdict
 import re
 import datetime
 from pathlib import Path
+from parsing.whatsapp_text_search_patterns import LINE_SPLIT_DELIMITER
 
 
 class WhatsAppChatByteDecoder(object):
@@ -18,26 +19,36 @@ class WhatsAppChatByteDecoder(object):
         return self.whatsapp_text
 
 
-class WhatsAppAgentDetector(WhatsAppChatByteDecoder):
+class WhatsAppLineParser(WhatsAppChatByteDecoder):
 
     def __init__(self, whatsapp_text):
-        super(WhatsAppAgentDetector, self).__init__(whatsapp_text)
+        super(WhatsAppLineParser, self).__init__(whatsapp_text)
+        self._individual_lines = self.get_split_lines()
+        self.individual_lines_without_preamble = ""
+        self.remove_trailing_empty_strings()
+        self.set_individual_lines_without_preamble()
 
-    def get_participants_in_chat(self, text_delimiter, author_search_pattern):
-        list_of_lines = self.decoded_text.split(text_delimiter)
-        authors_set = set()
+    def get_split_lines(self):
+        return self.decoded_text.split(LINE_SPLIT_DELIMITER)
 
-        # iterate through lines of the whatsapp chat, getting authors as you go
-        for text_line in list_of_lines:
-            if len(text_line) == 0:
-                continue
-            author_of_line = re.search(author_search_pattern,
-                                       text_line).group(1)
-            authors_set.add(author_of_line)
-        list_of_authors = list(authors_set)
-        if len(list_of_authors) == 0:
-            return 'No detected participants'
-        return list_of_authors
+    def remove_trailing_empty_strings(self):
+        self._individual_lines = list(filter(lambda x: x != '', self._individual_lines))
+        return self
+
+    def remove_preamble_from_whatsapp_lines(self):
+        whatsapp_preamble_text = "Messages and calls are end-to-end encrypted."
+        filtered_text_lines = []
+        for text_line in self._individual_lines:
+            if whatsapp_preamble_text not in text_line:
+                filtered_text_lines.append(text_line)
+        return filtered_text_lines
+
+    def set_individual_lines_without_preamble(self):
+        self.individual_lines_without_preamble = self.remove_preamble_from_whatsapp_lines()
+        return self
+
+    def get_individual_lines_without_preamble(self):
+        return self.individual_lines_without_preamble
 
 
 def parse_whatsapp_text_into_dataframe(raw_text, prompter, responder):
@@ -68,7 +79,6 @@ def converter(
 
 
 def text_to_dictionary(text, prompt, response):
-
     # convert from bytes to string
     if isinstance(text, (bytes, bytearray)):
         text = text.decode()
@@ -107,5 +117,3 @@ def construct_output_directory(output_name):
 
 def construct_default_filename(prompter, responder):
     return f'output_{datetime.datetime.now()}_{prompter}_{responder}'
-
-

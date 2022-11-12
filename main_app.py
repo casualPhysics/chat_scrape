@@ -13,9 +13,10 @@ from gmail_api.config import GMAIL_API_CREDENTIALS
 from gmail_api.handler import get_user_token
 
 from parsing.whatsapp import parse_whatsapp_text_into_dataframe
-from parsing.whatsapp import WhatsAppAgentDetector
-from parsing.whatsapp_text_search_patterns import ANDROID_WA_SEARCH_PATTERN
-from processing.WhatsappChatDisplayHandler import WhatsAppChatDisplayHandler, get_string_of_suggested_participants
+from parsing.chat_agent_detectors import WhatsAppChatAgentDetector
+from parsing.chat_pattern_verifiers import WhatsAppChatPatternVerifier
+
+from processing.WhatsappChatDisplayHandler import WhatsAppChatDisplayHandler
 from processing.WhatsappChatFileDataConverter import WhatsAppChatFileDataConverter
 
 app = Flask(__name__)
@@ -37,6 +38,7 @@ def index():
 
 @app.route('/email_registry')
 def email_registry():
+    session.clear()
     if sc.EMAIL_TOKEN_KEY in session:
         return f'Token already exists {session[sc.EMAIL_TOKEN_KEY]}'
     else:
@@ -94,10 +96,16 @@ def attachments():
                                      'button_value': message_id_string}
 
         # create dictionaries that store the type of chat
-        # get the list of suggested authors
+        chat_type = (WhatsAppChatPatternVerifier(whatsapp_text_string)
+                     .verify_is_consistent_chat_pattern())
+
+        # create entry where authors are stored
+        authors_in_chat = WhatsAppChatAgentDetector(whatsapp_text_string).get_participants_in_chat()
 
         message_packet_data_by_ids[message_id_string] = whatsapp_display_text_dictionary
         message_packet_data_by_ids[message_id_string].update(parsing_button_dictionary)
+        message_packet_data_by_ids[message_id_string].update({'authors_in_chat': ','.join(authors_in_chat)})
+        message_packet_data_by_ids[message_id_string].update({'chat_type': str(chat_type)})
 
     if request.method == 'POST':
         selected_message_id_for_parsing = request.form['button that parses chat data']
@@ -107,7 +115,7 @@ def attachments():
         preview_table = whatsapp_parse_dataframe.head().to_html()
 
         # get suggested participants in the chat
-        suggested_participants = WhatsAppAgentDetector(text).get_participants_in_chat(ANDROID_WA_NEWLINE_DELIMITER,
+        suggested_participants = WhatsAppChatAgentDetector(text).get_participants_in_chat(ANDROID_WA_NEWLINE_DELIMITER,
                                                                                       ANDROID_WA_SEARCH_PATTERN)
 
     return render_template('home/attachments.html', message_packets=message_packet_data_by_ids,

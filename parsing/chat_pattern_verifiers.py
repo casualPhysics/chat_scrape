@@ -1,8 +1,9 @@
 import re
-from parsing.whatsapp import WhatsAppChatByteDecoder
+from parsing.whatsapp import WhatsAppLineParser
+from parsing.whatsapp_text_search_patterns import GENERAL_WA_SEARCH_PATTERN
 
 
-class ChatSearchPatternVerifier(WhatsAppChatByteDecoder):
+class ChatSearchPatternVerifier(WhatsAppLineParser):
 
     def __init__(self, whatsapp_text, expected_search_pattern):
         super(ChatSearchPatternVerifier, self).__init__(whatsapp_text)
@@ -13,17 +14,24 @@ class ChatSearchPatternVerifier(WhatsAppChatByteDecoder):
         We need to check that the text follows a consistent
         text pattern
         """
-        lines_of_text = self.decoded_text.split('\n')
+        lines_of_text = self.individual_lines_without_preamble
         desired_pattern = re.compile(self.expected_search_pattern)
-        print(lines_of_text)
+        if len(lines_of_text) == 0:
+            return False
         for line in lines_of_text:
-            print(line)
             if not bool(desired_pattern.match(line)):
+                print(line)
                 return False
         return True
 
 
-class ChatFormVerifier(WhatsAppChatByteDecoder):
+class WhatsAppChatPatternVerifier(ChatSearchPatternVerifier):
+
+    def __init__(self, whatsapp_text):
+        super(WhatsAppChatPatternVerifier, self).__init__(whatsapp_text, GENERAL_WA_SEARCH_PATTERN)
+
+
+class ChatFormVerifier(WhatsAppLineParser):
 
     def __init__(self, whatsapp_text):
         super(ChatFormVerifier, self).__init__(whatsapp_text)
