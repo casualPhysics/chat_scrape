@@ -14,11 +14,15 @@
   <div class="column">
       {% for message_id, message_display_data in message_packets.items() %}
         <p><b>{{ message_id }}</b></p>
-        <p><b>Authors in chat: {{ message_display_data.authors_in_chat }}</b></p>
+            <p>
+                <b>Authors in chat: {{ message_display_data.authors_in_chat }} - Is this correct?</b>
+                If not, you can manually set the authors.
+            </p>
         <p>{{ message_display_data.display_text }}</p>
             <!-- These buttons will allow us to download, pretrain and upload to google cloud-->
         <form method="post">
         <input type="submit" name="{{ message_display_data.button_name }}" value="{{ message_display_data.button_value }}">
+        <input type="submit" name="Pretrain button" value="{{ message_display_data.button_value }}">
         </form>
       {% endfor %}
   </div>

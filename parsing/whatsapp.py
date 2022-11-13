@@ -3,7 +3,7 @@ from collections import defaultdict
 import re
 import datetime
 from pathlib import Path
-from parsing.whatsapp_text_search_patterns import LINE_SPLIT_DELIMITER
+from parsing.whatsapp_text_search_patterns import LINE_SPLIT_DELIMITER, GENERAL_WA_MULTI_SEARCH_PATTERN
 
 
 class WhatsAppChatByteDecoder(object):
@@ -83,14 +83,16 @@ def text_to_dictionary(text, prompt, response):
     if isinstance(text, (bytes, bytearray)):
         text = text.decode()
 
-    text_list = text.split('\n[')[1:]
+    text_list = text.split('\n')[1:]
     result_dict, count, prev_author = defaultdict(dict), 0, ''
-
     for ix, line in enumerate(text_list):
 
-        result = re.sub('\d\d\/\d\d\/\d\d\d\d, \d\d:\d\d:\d\d\]\s', '', line)
-        author = re.match('(^.*?):', result)[1]
-        message = re.match('.*:(.*)', result)[1]
+        search_pattern = re.search(GENERAL_WA_MULTI_SEARCH_PATTERN, line)
+        if search_pattern is not None:
+            author = search_pattern.group(1)
+            message = search_pattern.group(2)
+        else:
+            continue
 
         if author == prompt:
             if author == prev_author:

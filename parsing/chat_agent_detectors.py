@@ -16,7 +16,7 @@ class ChatAgentDetector(WhatsAppLineParser):
 
     def get_participants_in_chat(self):
         list_of_lines = self.individual_lines_without_preamble
-        authors_set = set()
+        authors_dictionary = {}
 
         # iterate through lines of the whatsapp chat, getting authors as you go
         for text_line in list_of_lines:
@@ -27,9 +27,11 @@ class ChatAgentDetector(WhatsAppLineParser):
             if self.check_if_line_suitable_for_author_parse(text_line):
                 author_of_line = re.search(self.author_search_pattern,
                                            text_line).group(1)
-                authors_set.add(author_of_line)
+                if author_of_line not in authors_dictionary.keys():
+                    authors_dictionary[author_of_line] = 0
 
-        list_of_authors = list(authors_set)
+        print(authors_dictionary)
+        list_of_authors = list(authors_dictionary.keys())
         if len(list_of_authors) == 0:
             return 'No detected participants'
         return list_of_authors
@@ -38,4 +40,5 @@ class ChatAgentDetector(WhatsAppLineParser):
 class WhatsAppChatAgentDetector(ChatAgentDetector):
 
     def __init__(self, whatsapp_text):
-        super(WhatsAppChatAgentDetector, self).__init__(whatsapp_text, GENERAL_WA_SEARCH_PATTERN)
+        super(WhatsAppChatAgentDetector, self).__init__(whatsapp_text,
+                                                        GENERAL_WA_SEARCH_PATTERN)

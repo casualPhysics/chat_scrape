@@ -104,19 +104,16 @@ def attachments():
 
         message_packet_data_by_ids[message_id_string] = whatsapp_display_text_dictionary
         message_packet_data_by_ids[message_id_string].update(parsing_button_dictionary)
-        message_packet_data_by_ids[message_id_string].update({'authors_in_chat': ','.join(authors_in_chat)})
+        message_packet_data_by_ids[message_id_string].update({'authors_in_chat': ', '.join(authors_in_chat)})
         message_packet_data_by_ids[message_id_string].update({'chat_type': str(chat_type)})
 
     if request.method == 'POST':
         selected_message_id_for_parsing = request.form['button that parses chat data']
         text = full_whatsapp_texts_by_ids[selected_message_id_for_parsing]
 
-        whatsapp_parse_dataframe = parse_whatsapp_text_into_dataframe(text, 'Afiq Hatta', 'Ami')
+        whatsapp_parse_dataframe = parse_whatsapp_text_into_dataframe(text,
+                                                                      authors_in_chat[0], authors_in_chat[1])
         preview_table = whatsapp_parse_dataframe.head().to_html()
-
-        # get suggested participants in the chat
-        suggested_participants = WhatsAppChatAgentDetector(text).get_participants_in_chat(ANDROID_WA_NEWLINE_DELIMITER,
-                                                                                      ANDROID_WA_SEARCH_PATTERN)
 
     return render_template('home/attachments.html', message_packets=message_packet_data_by_ids,
                            preview_table=preview_table, suggested_participants=suggested_participants)
