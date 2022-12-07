@@ -45,13 +45,10 @@ def signup():
     return render_template('home/index.html', segment='index')
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', "GET"])
 def login():
-    # Get the user's email and password from the request body
 
-    if 'firebase_id_token' in session:
-        return render_template('home/index.html', segment='index')
-
+    session.clear()
     if request.method == 'POST':
 
         # login with email and password
@@ -62,7 +59,11 @@ def login():
         try:
             user = firebase_pb_handler.auth().sign_in_with_email_and_password(email, password)
             firebase_id_token = user['idToken']
+            firebase_refresh_token = user['refreshToken']
+
+            # save this into session object
             session['firebase_id_token'] = firebase_id_token
+            session['firebase_refresh_token'] = firebase_refresh_token
             return render_template('home/index.html', segment='index')
 
         except Exception as e:
@@ -70,22 +71,11 @@ def login():
             return str(e)
     else:
         return '''
+            <p> Thank you for logging into our prototype! </p> 
+            <p> We do not store your passwords of course. </p>
             <form method="post">
-                <input type="text" name="username" placeholder="Username">
+                <input type="text" name="email" placeholder="Email">
                 <input type="password" name="password" placeholder="Password">
                 <input type="submit" value="Login">
             </form>
         '''
-
-    # db = firebase_pb_handler.database()
-    #
-    # # data to save
-    # data = {
-    #     "name": "Mortimer 'Morty' Smith"
-    # }
-    #
-    # # Pass the user's idToken to the push method
-    # results = db.child("users").push(data, user['idToken'])
-    #
-    # claims = google.oauth2.id_token.verify_firebase_token(
-    #     token, firebase_request_adapter)
