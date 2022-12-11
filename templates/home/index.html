@@ -1,15 +1,69 @@
 {% extends 'layouts/base_template.html' %}
 
-{% block title %} Presentation {% endblock title %}
+{% block title %} Welcome to Caladan {% endblock title %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
+
+<!-- Specific Javascript head goes HERE -->
+{% block javascripthead %}
+{% endblock javascripthead %}
 
 {% block body_class %} index-page {% endblock body_class %}
 
 {% block content %}
 Welcome {{ name }}.
+<p> This project is designed to record your preferences, judgement and communication style.
+</p>
+<p> Hopefully, we can preserve a your judgement style so that when you are old,
+    you can make your decisions as your best self. </p>
+<p> You are logged in as {{ index_page_data.user_email }}</p>
 
+<h1> Add email sources for training. </h1>
+<p> Add a new email source here. </p>
+
+
+<p> This application reads emails to gauge your judgement style. </p>
+<h1> Available email sources </h1>
+
+<style>
+.box {
+    width: 400px;
+    height: 200px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    overflow: scroll;
+}
+</style>
+
+<div class="row">
+    <div class="column">
+        <div class="box">
+            Here are your read emails.
+            You are currently not logging any email taps.
+            If you login with the above, you can tap an email.
+            {% for label in index_page_data.available_email_labels %}
+            <ul>
+                <li>{{ label.name }}: <a href="{{ url_for('retrieve_emails_from_label', label=label['id']) }}">Tap to retrieve
+                    attachments</a></li>
+            </ul>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="column">
+        <div class="box">
+            Here are your read emails. Here are the available attachments.
+            {% for label in index_page_data.available_email_labels %}
+            <ul>
+                <li>{{ label }}: <a href="{{ url_for('retrieve_emails_from_label', label=label) }}">Tap to retrieve
+                    attachments</a></li>
+            </ul>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<h1> Available inboxes that you give consent to analyse. </h1>
 
 {% block emailstate %}
 {% endblock emailstate %}

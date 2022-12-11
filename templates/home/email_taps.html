@@ -1,0 +1,18 @@
+{% extends 'layouts/base_template.html' %}
+
+{% block content %}
+<p>
+    We have recorded several email addresses that you'd like us to reference from when you die, or if you get a
+    degenerative disease.
+    These are the following. You can also add Whatsapp chats. Click on each
+    email to tap its data. It will initiate a secure email. You will be logged into the session from
+    this email.
+<ul>
+    {% for email_tap in index_page_data.email_taps_list %}
+    <p>
+    <li> {{ email_tap }} <a href="{{ url_for('email_registry') }}"> Authenticate permission here. </a></li>
+    </p>
+    {% endfor %}
+</ul>
+</p>
+{% endblock %}

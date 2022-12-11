@@ -1,0 +1,9 @@
+{% extends 'layouts/base_template.html' %}
+
+{% block content %}
+<p> Register a new email tap below. </p>
+
+<form action="/saveemail" method="post">
+    <input type="text" name="email" placeholder="Email">
+</form>
+{% endblock %}

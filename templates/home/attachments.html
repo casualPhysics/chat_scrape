@@ -30,6 +30,10 @@
       <p> This is a text preview </p>.
       {{ preview_table|safe }}
   </div>
+    <div>
+        <p> Here are your uploaded texts. </p>
+        {% for message_id, message_display_data in message_packets.items() %}
+    </div>
 </div>
 
 {% endblock attachments %}
