@@ -1,13 +1,25 @@
-from flask import request, session
+from flask import request, session, url_for, render_template, redirect
 from firebase_admin import firestore
 from main_app import app
 
-# Set up Firebase
-db = firestore.client()
+
+@app.route('/email_taps')
+def email_taps():
+    """
+    This function saves the emails that the user wants to keep.
+    :return:
+    """
+    return render_template('home/email_taps.html', segment='index',
+                           email_taps_list=get_user_tracked_emails(session['user_email_key']))
 
 
-@app.route('/saveemail', methods=['POST'])
+@app.route('/register_email_tap')
 def save_email():
+    return render_template('home/register_email_tap.html')
+
+
+@app.route('/save_email_tap', methods=['GET','POST'])
+def save_email_tap():
     """
     This function saves the emails that the user wants to keep.
     :return:
@@ -20,12 +32,10 @@ def save_email():
         "type": 'email_to_tap',
     })
 
-    return "Data saved to Firebase!"
+    return redirect(url_for('email_taps'))
 
 
 def get_user_tracked_emails(email_user_key):
     doc_ref = db.collection(f"users/prototype_users/{email_user_key}")
     doc = doc_ref.get()
     return [email.to_dict()['email_address'] for email in doc]
-
-

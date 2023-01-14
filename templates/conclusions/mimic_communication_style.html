@@ -1,0 +1,23 @@
+{% extends 'layouts/base_template.html' %}
+
+{% block content %}
+  <div class="column">
+    <b>Mimic something in that person's speech style. </b>
+      <div class="box">
+          Put a simplified version of your text in the box below.
+
+          <form action="/communication_style" method="post">
+            <input type="text" name="sentence" placeholder="insert sentence here">
+          </form>
+
+          <h2> Simulated output </h2>
+          <ul>
+          {% for choice in mimicking_text.choices %}
+            <li>Generated text: {{ choice.text }}, Probability: {{ choice.logprobs }}</li>
+          {% endfor %}
+          </ul>
+
+          {{ mimicking_text }}
+      </div>
+  </div>
+{% endblock %}

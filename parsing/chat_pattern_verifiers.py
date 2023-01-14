@@ -20,7 +20,6 @@ class ChatSearchPatternVerifier(WhatsAppLineParser):
             return False
         for line in lines_of_text:
             if not bool(desired_pattern.match(line)):
-                print(line)
                 return False
         return True
 

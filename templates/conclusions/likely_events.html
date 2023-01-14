@@ -1,0 +1,23 @@
+{% extends 'layouts/base_template.html' %}
+
+{% block content %}
+  <div class="column">
+    <b>You are currently harvesting. Register events here. </b>
+      <form method="POST" action="/register_possible_events">
+        <button type="submit">Submit</button>
+      </form>
+      <div class="box">
+          {% if event_list|length == 0 %}
+            The list is empty. You may wish to register a timeline from
+            some source material in attachments by clicking the button above.
+          {% else %}
+            Here are some likely events the client may have experienced.
+            {% for event in event_list %}
+            <ul>
+              <li> {{ event }} </li>
+            </ul>
+            {% endfor %}
+          {% endif %}
+      </div>
+  </div>
+{% endblock %}

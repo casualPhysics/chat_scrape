@@ -1,0 +1,29 @@
+{% extends 'layouts/base_template.html' %}
+
+{% block content %}
+<style>
+  .btn {
+    display: inline-block;
+    width: 25%;
+    background-color: red;
+  }
+</style>
+
+  <div class="column">
+    <b>
+        Clicking below will give you a reward, and a fee. You need to maximise
+        the amount of money you get within 10 tries.
+        {{ }}
+    </b>
+      <div class="box">
+          <form method="post">
+            {{ form.csrf_token }}
+
+            {{ form.button1(class="btn") }}
+            {{ form.button2(class="btn") }}
+            {{ form.button3(class="btn") }}
+            {{ form.button4(class="btn") }}
+          </form>
+      </div>
+  </div>
+{% endblock %}

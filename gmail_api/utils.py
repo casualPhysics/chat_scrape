@@ -65,10 +65,6 @@ def unzip_files_in_dir_to_dir(source_dir, target_dir):
                          lambda x: unzip_file_into_directory(x, target_dir))
 
 
-def get_file_name(directory_string):
-    scan_files_directory(directory_string, print)
-
-
 def read_txt_file_from_zip_buffer(file_buffer):
     z = zipfile.ZipFile(io.BytesIO(file_buffer))
     text_string = z.read(z.infolist()[0])

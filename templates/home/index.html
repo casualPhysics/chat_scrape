@@ -19,10 +19,6 @@ Welcome {{ name }}.
     you can make your decisions as your best self. </p>
 <p> You are logged in as {{ index_page_data.user_email }}</p>
 
-<h1> Add email sources for training. </h1>
-<p> Add a new email source here. </p>
-
-
 <p> This application reads emails to gauge your judgement style. </p>
 <h1> Available email sources </h1>
 
@@ -44,7 +40,7 @@ Welcome {{ name }}.
             If you login with the above, you can tap an email.
             {% for label in index_page_data.available_email_labels %}
             <ul>
-                <li>{{ label.name }}: <a href="{{ url_for('retrieve_emails_from_label', label=label['id']) }}">Tap to retrieve
+                <li>{{ label.name }}: <a href="{{ url_for('retrieve_emails_from_label', label_id=label['id']) }}">Tap to retrieve
                     attachments</a></li>
             </ul>
             {% endfor %}
@@ -55,7 +51,7 @@ Welcome {{ name }}.
             Here are your read emails. Here are the available attachments.
             {% for label in index_page_data.available_email_labels %}
             <ul>
-                <li>{{ label }}: <a href="{{ url_for('retrieve_emails_from_label', label=label) }}">Tap to retrieve
+                <li>{{ label }}: <a href="{{ url_for('retrieve_emails_from_label', label_id=label) }}">Tap to retrieve
                     attachments</a></li>
             </ul>
             {% endfor %}

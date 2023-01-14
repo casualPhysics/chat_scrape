@@ -2,22 +2,65 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>
-     - {% block title %}{% endblock %} | Caladan
-  </title>
-  <!-- Specific CSS goes HERE -->
-  {% block stylesheets %}{% endblock stylesheets %}
+    <title>
+        - {% block title %}{% endblock %} | Caladan
+    </title>
+    <!-- Specific CSS goes HERE -->
+    {% block stylesheets %}{% endblock stylesheets %}
+
+    <!-- Specific Javascript head goes HERE -->
+    {% block javascripthead %}{% endblock javascripthead %}
 
 </head>
 <body class="{% block body_class %}{% endblock body_class %}">
+<style>
+nav {
+  width: 200px;
+  float: left;
+  background-color: #e0e0e0;
+  padding: 20px;
+}
 
-    {% block content %}{% endblock content %}
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
 
-  <!-- Specific JS goes HERE -->
-  {% block javascripts %}{% endblock javascripts %}
+nav ul li {
+  margin: 10px 0;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+}
+</style>
+
+<nav>
+    <ul>
+        <li><a href="/index">Home</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/email_taps">Email taps</a></li>
+            <ul>
+                <li><a href="/email_taps">Tap a new email</a></li>
+                <li><a href="/email_taps">Tapped emails</a></li>
+            </ul>
+        <li><a href="/training">Train on a new email</a></li>
+        <li><a href="/communication_style">Mimick communication</a></li>
+        <li><a href="/register_possible_events">Likely events experienced</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/contact">Contact</a></li>
+    </ul>
+</nav>
+
+{% block content %}{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}
 
 </body>
 </html>

@@ -11,7 +11,10 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 
-def get_user_token(credentials, client_secret_file_path):
+def get_user_token_for_gmail_api(credentials, client_secret_file_path):
+    """
+    This saves a credentials json for a specific email service.
+    """
     if not credentials or not credentials.valid:
         if credentials and credentials.expired and credentials.refresh_token:
             credentials.refresh(Request())

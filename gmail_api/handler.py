@@ -12,7 +12,7 @@ from googleapiclient.errors import HttpError
 from gmail_api.attachments import get_attachments
 from gmail_api.utils import write_bytes_file, unzip_files_in_dir_to_dir
 from gmail_api.config import WHATSAPP_DATA_FILTER, MY_USER_ID, TRAINING_DIRECTORY, GMAIL_API_TOKEN_DIRECTORY
-from gmail_api.authentication.tokens import get_user_token, read_token_from_path
+from gmail_api.authentication.gmail_credentials_for_user import get_user_token_for_gmail_api, read_token_from_path
 
 
 def main(filter_string, user_id, destination_path):
@@ -78,26 +78,6 @@ def _get_attachment_file_from_message(message_id, service, user_id):
     return attachment
 
 
-def get_attachment_names_from_messages(message_id, service, user_id):
-    pass
-
-
-def get_attachment_file_from_message(message, service, user_id):
-    pass
-
-
-def get_message_details(message):
-    pass
-
-
-def upload_email_attachments():
-    pass
-
-
-def summarise_email_attachments():
-    pass
-
-
 def list_emails_from_filter(creds, filter_string, user_id):
     messages = get_email_message_objects(creds, filter_string, user_id)
 
@@ -106,10 +86,6 @@ def list_emails_from_filter(creds, filter_string, user_id):
         attachment, name = get_attachments(service, user_id, message_id)
         target = destination_path + name
         write_bytes_file(target, attachment)
-
-
-def gcloud_store_email_attachments():
-    pass
 
 
 if __name__ == '__main__':

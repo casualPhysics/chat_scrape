@@ -1,0 +1,21 @@
+{% extends 'layouts/base_template.html' %}
+
+{% block content %}
+<p>
+    Here are your current loaded attachments. Click harvest to draw conclusions.
+
+    {% for label, attachments in doc_collection.items() %}
+        <p> Loaded attachments under {{ label }} </p>
+        <ul>
+        {% for item in attachments %}
+            <li> {{ item }} </li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+</p>
+
+<p>
+    Check conclusions here.
+    <a href="draw conclusions">Link text</a>
+</p>
+{% endblock %}
